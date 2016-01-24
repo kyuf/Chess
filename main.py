@@ -1,0 +1,10 @@
+'''
+Main file
+'''
+import board
+import os
+
+#create initial state of board
+os.system('clear')
+space = board.initiate()
+board.generate(space)
