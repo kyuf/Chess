@@ -26,8 +26,33 @@ class Player:
         #store into self
         self.pieces = pieces
     
+    #moves follow PGN notation
     def move(self, notation, space):
-        pass
+        #pawn if first letter is lowercase
+        if notation[0].lower() == notation[0]:
+            pass
+        #rook if first letter is R
+        elif notation[0] == 'R':
+            pass
+        #knight if first letter is N
+        elif notation[0] == 'N':
+            pass
+        #bishop if first letter is B
+        elif notation[0] == 'B':
+            pass
+        #queen if first letter is Q
+        elif notation[0] == 'Q':
+            pass
+        #king if first letter is K
+        elif notation[0] == 'K':
+            pass
+        #king side castle if O-O
+        elif notation == 'O-O':
+            pass
+        #queen side castle if O-O-O
+        elif notation == 'O-O-O':
+            pass
+        
     
     def __repr__(self):
         return 'White' if self.color == 'w' else 'Black'
