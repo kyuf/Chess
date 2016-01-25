@@ -25,5 +25,9 @@ class Player:
         pieces['K'] = ['E'+r]
         #store into self
         self.pieces = pieces
-    def move(notation):
+    
+    def move(self, notation):
         pass
+    
+    def __repr__(self):
+        return 'White' if self.color == 'w' else 'Black'
