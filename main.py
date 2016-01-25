@@ -5,8 +5,8 @@ import board
 import player  
 
 #create initial state of board
-space = board.initiate()
-board.generate(space)
+spaces = board.initiate()
+board.generate(spaces)
 
 #initialize players and turn counter
 white = player.Player('w')
@@ -22,15 +22,15 @@ while True:
     
     #check if move is legal
     try:
-        players[turn].move(notation, space)
+        players[turn].move(notation, spaces)
         #set to next player's turn
         turn = 1 - turn
         
         #update board
-        board.generate(space)
+        board.generate(spaces)
     
     #declare re-input for move
     except:
-        board.generate(space)
+        board.generate(spaces)
         print('Illegal move')
     

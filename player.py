@@ -27,7 +27,7 @@ class Player:
         self.pieces = pieces
     
     #moves follow PGN notation
-    def move(self, notation, space):
+    def move(self, notation, spaces):
         #pawn if first letter is lowercase
         if notation[0].lower() == notation[0]:
             pass
