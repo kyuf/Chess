@@ -8,6 +8,7 @@ from bishop import *
 from rook import *
 from queen import *
 from king import *
+import os
 
 #Creates initial board conditions
 #board is described using files (vertical) and ranks (horizontal)
@@ -42,6 +43,7 @@ def initiate():
 #Takes in dict containing board spaces and generates board
 #design of board can be viewed in ref.txt
 def generate(space):
+    os.system('clear')
     fil = '\n    ' + '      %s' * 8 % ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
     print(fil)
     print('       ' + '_' * 55)
