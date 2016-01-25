@@ -26,7 +26,7 @@ class Player:
         #store into self
         self.pieces = pieces
     
-    def move(self, notation):
+    def move(self, notation, space):
         pass
     
     def __repr__(self):
