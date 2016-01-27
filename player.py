@@ -2,6 +2,8 @@
 Player class contains information of player's pieces and allows moves to be
 made.
 '''
+import castle
+
 class Player:
     #pieces contains dictionary with lists of current positions for each type
     #of piece
@@ -46,12 +48,9 @@ class Player:
         #king if first letter is K
         elif notation[0] == 'K':
             pass
-        #king side castle if O-O
-        elif notation == 'O-O':
-            pass
-        #queen side castle if O-O-O
-        elif notation == 'O-O-O':
-            pass
+        #kcastle if O-O or O-O-O
+        elif notation == 'O-O' or notation == 'O-O-O':
+            spaces, self.pieces = castle.castle(notation, spaces, self)
         
     
     def __repr__(self):
