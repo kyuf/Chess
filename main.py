@@ -22,7 +22,15 @@ while True:
     
     #check if move is legal
     try:
-        players[turn].move(notation, spaces)
+        #returns updated spaces and capture if legal otherwise returns None
+        tmp = players[turn].move(notation, spaces)
+        if tmp:
+            spaces, capPiece, capSpace = tmp
+            #remove captured piece from opponent's pieces
+            if capPiece:
+                players[1-turn].pieces[capPiece].remove(capSpace)
+        else:
+            raise RuntimeError('Illegal move')
         #set to next player's turn
         turn = 1 - turn
         
