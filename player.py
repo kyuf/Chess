@@ -16,15 +16,15 @@ class Player:
         #add initial pawn positions
         pieces = {}
         pieces['P'] = []
-        for f in 'ABCDEFGH':
+        for f in 'abcdefgh':
             pieces['P'].append(f+self.ranks[1])
         #add initial rook, knight, bishop, queen, king positions
         r = self.ranks[0]
-        pieces['R'] = ['A'+r, 'H'+r]
-        pieces['N'] = ['B'+r, 'G'+r]
-        pieces['B'] = ['C'+r, 'F'+r]
-        pieces['Q'] = ['D'+r]
-        pieces['K'] = ['E'+r]
+        pieces['R'] = ['a'+r, 'h'+r]
+        pieces['N'] = ['b'+r, 'g'+r]
+        pieces['B'] = ['c'+r, 'f'+r]
+        pieces['Q'] = ['d'+r]
+        pieces['K'] = ['e'+r]
         #store into self
         self.pieces = pieces
     
@@ -32,7 +32,7 @@ class Player:
     def move(self, notation, spaces):
         #determine piece being moved
         #pawn if first letter is lowercase
-        if notation[0].lower() == notation[0]:
+        if notation[0] in 'abcdefgh':
             pieceType = 'P'
         #rook, knight, bishop, queen, king if first letter is R, N, B, Q, K
         elif notation[0] in 'RNBQK':
@@ -40,29 +40,36 @@ class Player:
         #castle if O-O or O-O-O
         elif notation == 'O-O' or notation == 'O-O-O':
             spaces, self.pieces = castle.castle(notation, spaces, self)
-            #no capture is made so return None for second and third
-            return spaces, None, None
+            #castling does not capture so second and third are None
+            return spaces, None
         #no piece found
         else:
             raise RuntimeError('Incorrect piece notation')
             
         #check if move is legal
-        legal = False
+        #check for capture
+        newSpace = notation[-2:]
+        capturedPiece = spaces[newSpace] if 'x' in notation else None
+        #cannot capture king or piece of same color
+        if capturedPiece:
+            if capturedPiece.note == 'K' or capturedPiece.color == player.color:
+                return False
+            #captured space cannot be empty
+            elif capturedPiece == '  ':
+                raise RuntimeError('Cannot capture empty space')
+
         #try move with all player pieces
         for pieceSpace in self.pieces[pieceType]:
-            canMove = spaces[pieceSpace].move(spaces, notation)
-            if canMove:
-                legal = True
-                oldSpace, newSpace, capture = canMove
+            oldSpace = spaces[pieceSpace].move(spaces, notation, newSpace)
+            if oldSpace:
                 #set piece at new space
                 spaces[newSpace] = spaces[pieceSpace]
                 #clear old space
                 spaces[oldSpace] = '  '
-            #exit loop if legal move is found
-            if legal:
-                break
-        #return updated spaces and capture
-        return (spaces, capture, newSpace) if legal else False
+                #return updated spaces and captured piece type
+                return spaces, capturedPiece
+        #move is illegal
+        return False
     
     def __repr__(self):
         return 'White' if self.color == 'w' else 'Black'
