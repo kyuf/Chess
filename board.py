@@ -15,28 +15,28 @@ import os
 def initiate():
     spaces = {}
     #fill in empty spaces
-    for f in 'ABCDEFGH':
+    for f in 'abcdefgh':
         for r in '3456':
             spaces[f+r] = '  '
         #fill in pawns
         for r, c in {'2': 'w', '7': 'b'}.items():
             spaces[f+r] = Pawn(c, f+r)
     
-    #wet
+    #wet, make dry
     for r, c in {'1': 'w', '8': 'b'}.items():
         #fill in rooks
-        for f in 'AH':
+        for f in 'ah':
             spaces[f+r] = Rook(c, f+r)
         #fill in knights
-        for f in 'BG':
+        for f in 'bg':
             spaces[f+r] = Knight(c, f+r)
         #fill in bishops
-        for f in 'CF':
+        for f in 'cf':
             spaces[f+r] = Bishop(c, f+r)
         #fill in queens
-        spaces['D'+r] = Queen(c, f+r)
+        spaces['d'+r] = Queen(c, f+r)
         #fill in kings
-        spaces['E'+r] = King(c, f+r)
+        spaces['e'+r] = King(c, f+r)
     
     return spaces
 
@@ -51,7 +51,7 @@ def generate(spaces):
         print('      |' * 9)
         print('   %s  ' % r, end='')
         for f in 'ABCDEFGH':
-            print('|  %s  ' % spaces[f+r], end='')
+            print('|  %s  ' % spaces[f.lower()+r], end='')
         print('|  %s' % r)
         print('      |' + '______|' * 8)
-    print(fil)
+    print(fil + '\n')
