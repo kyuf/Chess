@@ -34,9 +34,9 @@ def initiate():
         for f in 'cf':
             spaces[f+r] = Bishop(c, f+r)
         #fill in queens
-        spaces['d'+r] = Queen(c, f+r)
+        spaces['d'+r] = Queen(c, 'd'+r)
         #fill in kings
-        spaces['e'+r] = King(c, f+r)
+        spaces['e'+r] = King(c, 'e'+r)
     
     return spaces
 
