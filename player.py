@@ -18,19 +18,17 @@ class Player:
             self.ranks = '875'
             self.forward = -1
         #add initial pawn positions
-        pieces = {}
-        pieces['P'] = set()
+        self.pieces = {}
+        self.pieces['P'] = set()
         for f in 'abcdefgh':
-            pieces['P'].add(f+self.ranks[1])
+            self.pieces['P'].add(f+self.ranks[1])
         #add initial rook, knight, bishop, queen, king positions
         r = self.ranks[0]
-        pieces['R'] = {'a'+r, 'h'+r}
-        pieces['N'] = {'b'+r, 'g'+r}
-        pieces['B'] = {'c'+r, 'f'+r}
-        pieces['Q'] = {'d'+r}
-        pieces['K'] = {'e'+r}
-        #store into self
-        self.pieces = pieces
+        self.pieces['R'] = {'a'+r, 'h'+r}
+        self.pieces['N'] = {'b'+r, 'g'+r}
+        self.pieces['B'] = {'c'+r, 'f'+r}
+        self.pieces['Q'] = {'d'+r}
+        self.pieces['K'] = {'e'+r}
     
     #moves follow PGN notation
     def move(self, notation, spaces, opponent):
