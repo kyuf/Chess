@@ -14,3 +14,8 @@ class Piece:
     #update piece space after moving
     def updatePieceSpace(self, newSpace):
         self.space = newSpace
+    
+    #return partition spaces into rank and file for calculations
+    def partitionSpaces(self, newSpace):
+        #old rank, old file, new rank, new file
+        return self.space[1], self.space[0], newSpace[1], newSpace[0]
