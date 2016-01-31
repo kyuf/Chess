@@ -3,20 +3,20 @@ Handles castling king side and queen side
 '''
 def castle(notation, spaces, player):
     r = player.ranks[0]
-    kingSpace = 'E' + r
+    kingSpace = 'e' + r
     #select king or queen side rook space
     #O-O is king side
     if notation == 'O-O':
-        rookSpace = 'H' + r
-        checkIfEmpty = 'FG'
-        newKingSpace = 'G' + r
-        newRookSpace = 'F' + r
+        rookSpace = 'h' + r
+        checkIfEmpty = 'fg'
+        newKingSpace = 'g' + r
+        newRookSpace = 'f' + r
     #O-O-O is queen side
     else:
-        rookSpace = 'A' + r
-        checkIfEmpty = 'BCD'
-        newKingSpace = 'C' + r
-        newRookSpace = 'D' + r
+        rookSpace = 'a' + r
+        checkIfEmpty = 'bcd'
+        newKingSpace = 'c' + r
+        newRookSpace = 'd' + r
         
     #check if king and rook are in correct spaces
     if (player.pieces['K'] == kingSpace
