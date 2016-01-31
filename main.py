@@ -18,7 +18,6 @@ players = {0: white, 1: black}
 
 #loop for player move inputs
 while True:
-    print(players[turn].pieces)
     notation = input('%s to play: ' % players[turn])
     
     #check if move is legal
