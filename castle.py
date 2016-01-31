@@ -19,7 +19,7 @@ def castle(notation, spaces, player):
         newRookSpace = 'd' + r
         
     #check if king and rook are in correct spaces
-    if (player.pieces['K'] == kingSpace
+    if (kingSpace in player.pieces['K']
             and rookSpace in player.pieces['R']
             #check king and rook have not been moved
             and spaces[kingSpace].canCastle
@@ -40,5 +40,7 @@ def castle(notation, spaces, player):
         #update player piece locations
         player.pieces['K'] = [newKingSpace]
         player.pieces['R'].remove(rookSpace)
-        player.pieces['R'].append(newRookSpace)
+        player.pieces['R'].add(newRookSpace)
         return spaces, player.pieces
+    else:
+        raise RuntimeError('Cannot castle')
