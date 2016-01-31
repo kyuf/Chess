@@ -18,17 +18,15 @@ players = {0: white, 1: black}
 
 #loop for player move inputs
 while True:
+    print(players[turn].pieces)
     notation = input('%s to play: ' % players[turn])
     
     #check if move is legal
 
     #returns updated spaces and capture if legal otherwise returns None
-    tmp = players[turn].move(notation, spaces)
+    tmp = players[turn].move(notation, spaces, players[1-turn])
     if tmp:
-        spaces, capturedPiece = tmp
-        #remove captured piece from opponent's pieces
-        if capturedPiece:
-            players[1-turn].pieces[capturedPiece.note].remove(notation[-2:])
+        spaces, players[1-turn] = tmp
     else:
         raise RuntimeError('Illegal move')
     #set to next player's turn
