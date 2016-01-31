@@ -6,8 +6,17 @@ from piece import Piece
 class Bishop(Piece):
     note = 'B'
     
-    def move(self, spaces, notation):
+    def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        #return oldSpace, newSpace, capture
-        #capture is either type of piece captured or None 
-        pass
+        #return oldSpace 
+        rO, fO, rN, fN = self.partitionSpaces(newSpace)
+        dx = ord(fN) - ord(fO)
+        dy = ord(rN) - ord(rO)
+        if abs(dx) != abs(dy):
+            return None
+        #check spaces in between are empty
+        a = abs(dx)
+        for i in range(1, a):
+            if spaces[chr(ord(fO)+dx//a*i)+chr(ord(rO)+dy//a*i)] != '  ':
+                return None
+        return self.space
