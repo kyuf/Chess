@@ -4,7 +4,6 @@ Rook subclass
 from piece import Piece
 
 class Rook(Piece):
-    note = 'R'
     canCastle = True
     
     def disableCastle(self):
@@ -12,7 +11,6 @@ class Rook(Piece):
     
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        #return oldSpace
         rO, fO, rN, fN = self.partitionSpaces(newSpace)
         #moving vertically
         if fO == fN:
@@ -30,4 +28,5 @@ class Rook(Piece):
                     return None
         else:
             return None
+        #return space to use as oldSpace
         return self.space

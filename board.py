@@ -20,23 +20,23 @@ def initiate():
             spaces[f+r] = '  '
         #fill in pawns
         for r, c in {'2': 'w', '7': 'b'}.items():
-            spaces[f+r] = Pawn(c, f+r)
+            spaces[f+r] = Pawn(c, f+r, 'P')
     
     #wet, make dry
     for r, c in {'1': 'w', '8': 'b'}.items():
         #fill in rooks
         for f in 'ah':
-            spaces[f+r] = Rook(c, f+r)
+            spaces[f+r] = Rook(c, f+r, 'R')
         #fill in knights
         for f in 'bg':
-            spaces[f+r] = Knight(c, f+r)
+            spaces[f+r] = Knight(c, f+r, 'N')
         #fill in bishops
         for f in 'cf':
-            spaces[f+r] = Bishop(c, f+r)
+            spaces[f+r] = Bishop(c, f+r, 'B')
         #fill in queens
-        spaces['d'+r] = Queen(c, 'd'+r)
+        spaces['d'+r] = Queen(c, 'd'+r, 'Q')
         #fill in kings
-        spaces['e'+r] = King(c, 'e'+r)
+        spaces['e'+r] = King(c, 'e'+r, 'K')
     
     return spaces
 

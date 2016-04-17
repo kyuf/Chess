@@ -34,7 +34,14 @@ class Player:
     def move(self, notation, spaces, opponent):
         #vulnerable pawns can be captured en passant
         #clear any previously vulnerable pawns
+        
+        #
+        #FIX THIS!!!
+        #
         self.vulnerableSpace = None
+        
+        #remember current spaces in case move prevented by check
+        tmpSpaces = spaces
         
         #castle if O-O or O-O-O
         if notation == 'O-O' or notation == 'O-O-O':
@@ -44,10 +51,12 @@ class Player:
         #determine new space
         if notation[-2] != '=':
             newSpace = notation[-2:]
+            promoting = False
         else:
             #pawn promotion will put '=X' at end of notation where X is new
             #piece type
             newSpace = notation[-4:-2]
+            promoting = True
         #check that new space is within the board
         if newSpace[0] not in 'abcdefgh' or newSpace[1] not in '12345678':
             raise RuntimeError('Cannot move outside of board')

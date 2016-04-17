@@ -4,7 +4,6 @@ King subclass
 from piece import Piece
 
 class King(Piece):
-    note = 'K'
     canCastle = True
     
     def disableCastle(self):
@@ -12,7 +11,6 @@ class King(Piece):
     
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        #return oldSpace
         rO, fO, rN, fN = self.partitionSpaces(newSpace)
         dx = ord(fN) - ord(fO)
         dy = ord(rN) - ord(rO)
@@ -41,4 +39,5 @@ class King(Piece):
                     return None
         else:
             return None
+        #return space to use as oldSpace
         return self.space

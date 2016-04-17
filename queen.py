@@ -4,11 +4,8 @@ Queen subclass
 from piece import Piece
 
 class Queen(Piece):
-    note = 'Q'
-    
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        #return oldSpace
         rO, fO, rN, fN = self.partitionSpaces(newSpace)
         dx = ord(fN) - ord(fO)
         dy = ord(rN) - ord(rO)
@@ -34,4 +31,5 @@ class Queen(Piece):
                     return None
         else:
             return None
+        #return space to use as oldSpace
         return self.space

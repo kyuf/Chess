@@ -2,10 +2,11 @@
 Superclass for chess pieces
 '''
 class Piece:
-    def __init__(self, color, space):
+    def __init__(self, color, space, note):
         #color is either 'w' or 'b'
         self.color = color
         self.space = space
+        self.note = note
     
     def __repr__(self):
         #self.note defined in subclasses
