@@ -3,9 +3,7 @@ King subclass
 '''
 from piece import Piece
 
-class King(Piece):
-    canCastle = True
-    
+class King(Piece):  
     def disableCastle(self):
         self.canCastle = False
     
@@ -41,3 +39,6 @@ class King(Piece):
             return None
         #return space to use as oldSpace
         return self.space
+
+    def inCheck(self, spaces, kingSpace):
+        pass

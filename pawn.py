@@ -8,7 +8,6 @@ class Pawn(Piece):
     def __init__(self, color, space, note):
         Piece.__init__(self, color, space, note)
         self.vulnerable = False
-        self.forward = 1 if self.color == 'w' else -1
     
     def move(self, spaces, notation, newSpace):
         #check if pawn is in valid column

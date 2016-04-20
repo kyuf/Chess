@@ -4,8 +4,6 @@ Rook subclass
 from piece import Piece
 
 class Rook(Piece):
-    canCastle = True
-    
     def disableCastle(self):
         self.canCastle = False
     

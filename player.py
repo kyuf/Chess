@@ -40,9 +40,6 @@ class Player:
         #clear any previously vulnerable pawns
         self.vulSpaces = None
         
-        #remember current spaces in case move prevented by check
-        tmpSpaces = spaces
-        
         #castle if O-O or O-O-O
         if notation == 'O-O' or notation == 'O-O-O':
             spaces, self.pieces = castle.castle(notation, spaces, self)
@@ -142,6 +139,11 @@ class Player:
         self.pieces[pieceType].remove(oldSpace)
         self.pieces[pieceType].add(newSpace)
         #return updated spaces and captured piece type
+
+        #check if player's king is in check
+        #
+        #
+
         return spaces, opponent
         
     

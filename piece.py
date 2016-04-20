@@ -7,6 +7,12 @@ class Piece:
         self.color = color
         self.space = space
         self.note = note
+        #pawn and king need forward attribute for move calculations
+        if self.note in 'PK':
+            self.forward = 1 if self.color == 'w' else -1
+        #rook and king need castling attribute
+        if self.note in 'RK':
+            self.canCastle = True
     
     def __repr__(self):
         #self.note defined in subclasses
