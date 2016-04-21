@@ -141,8 +141,9 @@ class Player:
         #return updated spaces and captured piece type
 
         #check if player's king is in check
-        #
-        #
+        for kingSpace in self.pieces['K']:
+            if spaces[kingSpace].inCheck(spaces, kingSpace):
+                raise RuntimeError('King in check')
 
         return spaces, opponent
         

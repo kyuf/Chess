@@ -1,6 +1,7 @@
 '''
 King subclass
 '''
+from itertools import chain
 from piece import Piece
 
 class King(Piece):  
@@ -41,4 +42,37 @@ class King(Piece):
         return self.space
 
     def inCheck(self, spaces, kingSpace):
-        pass
+        #get space coordinate values
+        rO, fO = kingSpace[1], kingSpace[0]
+
+        #set range variables
+        up = range(ord(rO), ord('8'))
+        down = range(ord(rO), ord('1'), -1)
+        right = range(ord(fO), ord('h'))
+        left = range(ord(fO), ord('a'), -1)
+
+        #check for vertical attackers
+        for r in chain(up, down):
+            pass
+
+        #check for horizontal attackers
+        for f in chain(right, left):
+            pass
+        #check for knight attackers
+        for k in [0, 1]:
+            for f in [ord(fO)+(2-k), ord(fO)-(2-k)]:
+                if f >= ord('1') and f <= ord('8'):
+                    for r in [ord(rO)+(1+k), ord(rO)-(1+k)]:
+                        if r >= ord('a') and r <= ord('h'):
+                            pass
+        #check for diagonal attackers
+        #include check for pawn attackers here
+        for r, f in chain(
+                zip(up, right),
+                zip(up, left),
+                zip(down, right),
+                zip(down, left)
+                ):
+            pass
+
+        return False
