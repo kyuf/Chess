@@ -1,7 +1,6 @@
 '''
 King subclass
 '''
-from itertools import chain
 from piece import Piece
 
 class King(Piece):  
@@ -46,18 +45,20 @@ class King(Piece):
         rO, fO = kingSpace[1], kingSpace[0]
 
         #set range variables
-        up = range(ord(rO), ord('8'))
-        down = range(ord(rO), ord('1'), -1)
-        right = range(ord(fO), ord('h'))
-        left = range(ord(fO), ord('a'), -1)
+        up = range(ord(rO)+1, ord('8'))
+        down = range(ord(rO)-1, ord('1'), -1)
+        right = range(ord(fO)+1, ord('h'))
+        left = range(ord(fO)-1, ord('a'), -1)
 
         #check for vertical attackers
-        for r in chain(up, down):
-            pass
+        for d in [up, down]:
+            for r in d:
+                pass
 
         #check for horizontal attackers
-        for f in chain(right, left):
-            pass
+        for d in [right, left]:
+            for f in d:
+                pass
         #check for knight attackers
         for k in [0, 1]:
             for f in [ord(fO)+(2-k), ord(fO)-(2-k)]:
@@ -67,12 +68,13 @@ class King(Piece):
                             pass
         #check for diagonal attackers
         #include check for pawn attackers here
-        for r, f in chain(
+        for d in [
                 zip(up, right),
                 zip(up, left),
                 zip(down, right),
                 zip(down, left)
-                ):
-            pass
+                ]:
+            for r, f in d:
+                pass
 
         return False
