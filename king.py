@@ -41,40 +41,69 @@ class King(Piece):
         return self.space
 
     def inCheck(self, spaces, kingSpace):
+        #helper functions
+        def checkCheck(space, attackers):
+            if space.color != self.color and space.note in attackers:
+                return True
+            return False
+
+        def getRange(sig, start, end):
+            return [chr(i) for i in range(ord(start)+sig, ord(end)+sig, sig)]
+
         #get space coordinate values
         fO, rO = kingSpace[0], kingSpace[1]
 
         #set range variables
-        up = range(ord(rO)+1, ord('8'))
-        down = range(ord(rO)-1, ord('1'), -1)
-        right = range(ord(fO)+1, ord('h'))
-        left = range(ord(fO)-1, ord('a'), -1)
+        up = getRange(1, rO, '8')
+        down = getRange(-1, rO, '1')
+        right = getRange(1, fO, 'h')
+        left = getRange(-1, fO, 'a')
 
-        #check for vertical attackers
-        for d in [up, down]:
-            for r in d:
-                pass
+        #check for vertical and horizontal attackers
+        for filesAndRanks in [
+                zip([fO]*len(up), up),
+                zip([fO]*len(down), down),
+                zip(right, [rO]*len(right)),
+                zip(left, [rO]*len(left))
+                ]:
+            for f, r in filesAndRanks:
+                space = spaces[f+r]
+                if space != '  ':
+                    if checkCheck(space, 'RQK'):
+                        return True
+                    break
 
-        #check for horizontal attackers
-        for d in [right, left]:
-            for f in d:
-                pass
         #check for knight attackers
         for k in [0, 1]:
-            for f in [ord(fO)+(2-k), ord(fO)-(2-k)]:
-                if f >= ord('1') and f <= ord('8'):
-                    for r in [ord(rO)+(1+k), ord(rO)-(1+k)]:
-                        if r >= ord('a') and r <= ord('h'):
-                            pass
+            for r in [ord(rO)+(2-k), ord(rO)-(2-k)]:
+                if r >= ord('1') and r <= ord('8'):
+                    for f in [ord(fO)+(1+k), ord(fO)-(1+k)]:
+                        if f >= ord('a') and f <= ord('h'):
+                            space = spaces[chr(f)+chr(r)]
+                            if space != '  ':
+                                if checkCheck(space, 'N'):
+                                    return True
+
         #check for diagonal attackers
         #include check for pawn attackers here
-        for d in [
-                zip(up, right),
-                zip(up, left),
-                zip(down, right),
-                zip(down, left)
+        for filesAndRanks in [
+                zip(right, up),
+                zip(left, up),
+                zip(right, down),
+                zip(left, down)
                 ]:
-            for r, f in d:
-                pass
+            for f, r in filesAndRanks:
+                print(f+r)
+                space = spaces[f+r]
+                if space != '  ':
+                    #spaces where pawns need to be considered
+                    if ord(r) - ord(rO) == self.forward:
+                        attackers = 'PBQK'
+                    #no pawns
+                    else:
+                        attackers = 'BQK'
+                    if checkCheck(space, attackers):
+                        return True
+                    break
 
         return False
