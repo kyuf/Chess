@@ -25,4 +25,4 @@ class Piece:
     #return partition spaces into rank and file for calculations
     def partitionSpaces(self, newSpace):
         #old rank, old file, new rank, new file
-        return self.space[1], self.space[0], newSpace[1], newSpace[0]
+        return self.space[0], self.space[1], newSpace[0], newSpace[1]

@@ -9,7 +9,7 @@ class King(Piece):
     
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        rO, fO, rN, fN = self.partitionSpaces(newSpace)
+        fO, rO, fN, rN = self.partitionSpaces(newSpace)
         dx = ord(fN) - ord(fO)
         dy = ord(rN) - ord(rO)
         #king can only move one space
@@ -42,7 +42,7 @@ class King(Piece):
 
     def inCheck(self, spaces, kingSpace):
         #get space coordinate values
-        rO, fO = kingSpace[1], kingSpace[0]
+        fO, rO = kingSpace[0], kingSpace[1]
 
         #set range variables
         up = range(ord(rO)+1, ord('8'))

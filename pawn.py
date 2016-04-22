@@ -19,7 +19,7 @@ class Pawn(Piece):
             self.vulnerable = False
 
         #use spaces and notation to determine if move is legal
-        rO, fO, rN, fN = self.partitionSpaces(newSpace)
+        fO, rO, fN, rN = self.partitionSpaces(newSpace)
         dy = ord(rN) - ord(rO)
 
         #no capture is being made

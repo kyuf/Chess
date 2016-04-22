@@ -6,7 +6,7 @@ from piece import Piece
 class Queen(Piece):
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
-        rO, fO, rN, fN = self.partitionSpaces(newSpace)
+        fO, rO, fN, rN = self.partitionSpaces(newSpace)
         dx = ord(fN) - ord(fO)
         dy = ord(rN) - ord(rO)
         #check if diagonal
