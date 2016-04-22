@@ -4,7 +4,6 @@ made.
 '''
 from copy import deepcopy
 import castle
-import king
 from knight import *
 from bishop import *
 from rook import *
@@ -40,15 +39,16 @@ class Player:
         #vulnerable pawns can be captured en passant
         #clear any previously vulnerable pawns
         self.vulSpaces = None
-        
+        print(self.pieces['K'])
+
         #store temporary vaiables in case of check
         tmpSpaces = deepcopy(spaces)
         tmpOpponent = deepcopy(opponent)
 
         #castle if O-O or O-O-O
         if notation == 'O-O' or notation == 'O-O-O':
-            tmpSpaces, self.pieces = castle.castle(notation, tmpSpaces, self)
-            return tmpSpaces, opponent
+            tmpSpaces = castle.castle(notation, tmpSpaces, self)
+            return tmpSpaces, tmpOpponent
         
         #determine new space
         if notation[-2] != '=':
@@ -76,12 +76,12 @@ class Player:
                     capturedPiece = tmpSpaces[opponent.vulSpaces[1]]
                 else:
                     raise RuntimeError('No piece to capture')
-            #cannot capture king
-            elif type(capturedPiece) == king.King:
-                raise RuntimeError('Cannot capture King')
             #cannot capture piece of same color
             elif capturedPiece.color == self.color:
                 raise RuntimeError('Cannot capture own piece')
+            #cannot capture king
+            elif capturedPiece.note == 'K':
+                raise RuntimeError('Cannot capture King')
             
         #if not capturing new space cannot be occupied
         else:

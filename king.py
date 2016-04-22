@@ -93,7 +93,6 @@ class King(Piece):
                 zip(left, down)
                 ]:
             for f, r in filesAndRanks:
-                print(f+r)
                 space = spaces[f+r]
                 if space != '  ':
                     #spaces where pawns need to be considered

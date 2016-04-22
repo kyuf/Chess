@@ -14,7 +14,7 @@ def castle(notation, spaces, player):
     #O-O-O is queen side
     else:
         rookSpace = 'a' + r
-        checkIfEmpty = 'bcd'
+        checkIfEmpty = 'dcb'
         newKingSpace = 'c' + r
         newRookSpace = 'd' + r
         
@@ -25,10 +25,18 @@ def castle(notation, spaces, player):
             and spaces[kingSpace].canCastle
             and spaces[rookSpace].canCastle):
         #check spaces in between are empty
-        for space in checkIfEmpty:
-            if spaces[space+r] != '  ':
+        for f in checkIfEmpty:
+            if spaces[f+r] != '  ':
                 #blocking pieces prevent castling
                 raise RuntimeError('Castling blocked')
+        #check the king is not in check and will not be in check
+        #king also cannot castle through check
+        for f in 'e' + checkIfEmpty[:2]:
+            if spaces[kingSpace].inCheck(spaces, f+r):
+                if f == 'e':
+                    raise RuntimeError('Cannot castle out of check')
+                else:
+                    raise RuntimeError('Cannot castle into or through check')
         #castling allowed
         #disable future castle and re-arrange pieces
         spaces[kingSpace].disableCastle()
@@ -37,10 +45,13 @@ def castle(notation, spaces, player):
         spaces[newRookSpace] = spaces[rookSpace]
         spaces[kingSpace] = '  '
         spaces[rookSpace] = '  '
+        #update piece spaces
+        spaces[newKingSpace].updatePieceSpace(newKingSpace)
+        spaces[newRookSpace].updatePieceSpace(newRookSpace)
         #update player piece locations
-        player.pieces['K'] = [newKingSpace]
+        player.pieces['K'] = {newKingSpace}
         player.pieces['R'].remove(rookSpace)
         player.pieces['R'].add(newRookSpace)
-        return spaces, player.pieces
+        return spaces
     else:
         raise RuntimeError('Cannot castle')
