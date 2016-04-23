@@ -41,17 +41,10 @@ def castle(notation, spaces, player):
         #disable future castle and re-arrange pieces
         spaces[kingSpace].disableCastle()
         spaces[rookSpace].disableCastle()
-        spaces[newKingSpace] = spaces[kingSpace]
-        spaces[newRookSpace] = spaces[rookSpace]
-        spaces[kingSpace] = '  '
-        spaces[rookSpace] = '  '
-        #update piece spaces
-        spaces[newKingSpace].updatePieceSpace(newKingSpace)
-        spaces[newRookSpace].updatePieceSpace(newRookSpace)
-        #update player piece locations
-        player.pieces['K'] = {newKingSpace}
-        player.pieces['R'].remove(rookSpace)
-        player.pieces['R'].add(newRookSpace)
-        return spaces
+
+        return (spaces,
+                [newKingSpace,newRookSpace],
+                [kingSpace, rookSpace],
+                'KR')
     else:
         raise RuntimeError('Cannot castle')

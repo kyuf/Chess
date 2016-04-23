@@ -4,10 +4,10 @@ made.
 '''
 from copy import deepcopy
 import castle
-from knight import *
-from bishop import *
-from rook import *
-from queen import *
+from knight import Knight
+from bishop import Bishop
+from rook import Rook
+from queen import Queen
 
 class Player:
     #pieces contains dictionary with sets of current positions for each type
@@ -39,7 +39,6 @@ class Player:
         #vulnerable pawns can be captured en passant
         #clear any previously vulnerable pawns
         self.vulSpaces = None
-        print(self.pieces['K'])
 
         #store temporary vaiables in case of check
         tmpSpaces = deepcopy(spaces)
@@ -47,115 +46,139 @@ class Player:
 
         #castle if O-O or O-O-O
         if notation == 'O-O' or notation == 'O-O-O':
-            tmpSpaces = castle.castle(notation, tmpSpaces, self)
-            return tmpSpaces, tmpOpponent
+            castling = True
+            tmpSpaces, newSpaces, oldSpaces, pieceType = castle.castle(
+                    notation, tmpSpaces, self)
         
-        #determine new space
-        if notation[-2] != '=':
-            newSpace = notation[-2:]
-            promoting = False
+        #no castle move
         else:
-            #pawn promotion will put '=X' at end of notation where X is new
-            #piece type
-            newSpace = notation[-4:-2]
-            if newSpace[1] == self.ranks[2]:
-                promoting = True
+            castling = False
+            #determine new space
+            if notation[-2] != '=':
+                newSpace = notation[-2:]
+                promoting = False
             else:
-                raise RuntimeError('Can only promote on last rank')
-        #check that new space is within the board
-        if newSpace[0] not in 'abcdefgh' or newSpace[1] not in '12345678':
-            raise RuntimeError('Cannot move outside of board')
-        #check for capture
-        capturedPiece = tmpSpaces[newSpace] if 'x' in notation else None
-        
-        #check if capture is legal
-        if capturedPiece:
-            #captured space cannot be empty unless en passant
-            if capturedPiece == '  ':
-                if opponent.vulSpaces and opponent.vulSpaces[0] == newSpace:
-                    capturedPiece = tmpSpaces[opponent.vulSpaces[1]]
+                #pawn promotion has '=X' at end of notation where X is new
+                #piece type
+                newSpace = notation[-4:-2]
+                if newSpace[1] == self.ranks[2]:
+                    promoting = True
                 else:
-                    raise RuntimeError('No piece to capture')
-            #cannot capture piece of same color
-            elif capturedPiece.color == self.color:
-                raise RuntimeError('Cannot capture own piece')
-            #cannot capture king
-            elif capturedPiece.note == 'K':
-                raise RuntimeError('Cannot capture King')
+                    raise RuntimeError('Can only promote on last rank')
+            #check that new space is within the board
+            if newSpace[0] not in 'abcdefgh' or newSpace[1] not in '12345678':
+                raise RuntimeError('Cannot move outside of board')
+            #check for capture
+            capturedPiece = tmpSpaces[newSpace] if 'x' in notation else None
             
-        #if not capturing new space cannot be occupied
-        else:
-            if tmpSpaces[newSpace] != '  ':
-                raise RuntimeError('Cannot move into occupied space')
-        
-        #determine piece being moved
-        #pawn if first letter is lowercase
-        if notation[0] in 'abcdefgh':
-            pieceType = 'P'      
-        #rook, knight, bishop, queen, king if first letter is R, N, B, Q, K
-        elif notation[0] in 'RNBQK':
-            pieceType = notation[0]      
-        #no piece found
-        else:
-            raise RuntimeError('Incorrect piece notation')
-        
-        #find correct piece to move
-        for pieceSpace in self.pieces[pieceType]:
-            oldSpace = tmpSpaces[pieceSpace].move(
-                    tmpSpaces, notation, newSpace
-                    )
-            if oldSpace:
-                break
-        if not oldSpace:
-            #move is illegal
-            raise RuntimeError('Move found to be illegal')
-
-        #special considerations for moving pawns
-        if pieceType == 'P':
-            #check if pawn was made vulnerable
-            if tmpSpaces[oldSpace].isVul():
-                self.vulSpaces = tmpSpaces[oldSpace].getVulSpace(), newSpace
-            #check if pawn is being promoted
-            elif promoting:
-                newPiece = notation[-1]
-                if newPiece in 'RNBQ':
-                    self.pieces['P'].remove(oldSpace)
-                    self.pieces[newPiece].add(oldSpace)
-                    if newPiece == 'R':
-                        tmpSpaces[oldSpace] = Rook(self.color, oldSpace, 'R')
-                    elif newPiece == 'N':
-                        tmpSpaces[oldSpace] = Knight(self.color, oldSpace, 'N')
-                    elif newPiece == 'B':
-                        tmpSpaces[oldSpace] = Bishop(self.color, oldSpace, 'B')
+            #check if capture is legal
+            if capturedPiece:
+                #captured space cannot be empty unless en passant
+                if capturedPiece == '  ':
+                    if (opponent.vulSpaces
+                            and opponent.vulSpaces[0]) == newSpace:
+                        capturedPiece = tmpSpaces[opponent.vulSpaces[1]]
                     else:
-                        tmpSpaces[oldSpace] = Queen(self.color, oldSpace, 'Q')
-                    pieceType = newPiece
-                else:
-                    raise RuntimeError('Invalid promotion')
+                        raise RuntimeError('No piece to capture')
+                #cannot capture piece of same color
+                elif capturedPiece.color == self.color:
+                    raise RuntimeError('Cannot capture own piece')
+                #cannot capture king
+                elif capturedPiece.note == 'K':
+                    raise RuntimeError('Cannot capture King')
+                
+            #if not capturing new space cannot be occupied
+            else:
+                if tmpSpaces[newSpace] != '  ':
+                    raise RuntimeError('Cannot move into occupied space')
+            
+            #determine piece being moved
+            #pawn if first letter is lowercase
+            if notation[0] in 'abcdefgh':
+                pieceType = 'P'
+                #must be promoting if moving to last rank
+                if not promoting and newSpace[1] == self.ranks[2]:
+                    raise RuntimeError('Must promote on last rank')
+            #rook, knight, bishop, queen, king
+            elif notation[0] in 'RNBQK':
+                pieceType = notation[0]      
+            #no piece found
+            else:
+                raise RuntimeError('Incorrect piece notation')
+            
+            #find correct piece to move
+            for pieceSpace in self.pieces[pieceType]:
+                oldSpace = tmpSpaces[pieceSpace].move(
+                        tmpSpaces, notation, newSpace)
+                if oldSpace:
+                    break
+            if not oldSpace:
+                #move is illegal
+                raise RuntimeError('Move found to be illegal')
 
-        #remove captured piece from opponent's pieces
-        if capturedPiece:
-            tmpSpaces[capturedPiece.space] = '  '
-            tmpOpponent.pieces[capturedPiece.note].remove(capturedPiece.space)
-        #set piece at new space
-        tmpSpaces[newSpace] = tmpSpaces[oldSpace]
-        tmpSpaces[newSpace].updatePieceSpace(newSpace)
-        #clear old space
-        tmpSpaces[oldSpace] = '  '
-        #update player piece sets
-        self.pieces[pieceType].remove(oldSpace)
-        self.pieces[pieceType].add(newSpace)   
+            #special considerations for moving pawns
+            if pieceType == 'P':
+                #check if pawn was made vulnerable
+                if tmpSpaces[oldSpace].isVul():
+                    self.vulSpaces = tmpSpaces[
+                        oldSpace].getVulSpace(), newSpace
+                #check if pawn is being promoted
+                elif promoting:
+                    newPiece = notation[-1]
+                    if newPiece in 'RNBQ':
+                        self.pieces['P'].remove(oldSpace)
+                        self.pieces[newPiece].add(oldSpace)
+                        if newPiece == 'R':
+                            tmpSpaces[oldSpace] = Rook(
+                                    self.color, oldSpace, 'R')
+                        elif newPiece == 'N':
+                            tmpSpaces[oldSpace] = Knight(
+                                    self.color, oldSpace, 'N')
+                        elif newPiece == 'B':
+                            tmpSpaces[oldSpace] = Bishop(
+                                    self.color, oldSpace, 'B')
+                        else:
+                            tmpSpaces[oldSpace] = Queen(
+                                    self.color, oldSpace, 'Q')
+                        pieceType = newPiece
+                    else:
+                        raise RuntimeError('Invalid promotion')
+
+            #remove captured piece from opponent's pieces
+            if capturedPiece:
+                tmpSpaces[capturedPiece.space] = '  '
+                tmpOpponent.pieces[capturedPiece.note].remove(
+                        capturedPiece.space) 
+
+            #reformat newSpace and oldSpace
+            newSpaces, oldSpaces = [newSpace], [oldSpace]
+
+        #update spaces and pieces
+        for n, o, p in zip(newSpaces, oldSpaces, pieceType):
+            #set piece at new space
+            tmpSpaces[n] = tmpSpaces[o]
+            tmpSpaces[n].updatePieceSpace(n)
+            #clear old space
+            tmpSpaces[o] = '  '
+            #update player piece sets
+            self.pieces[p].remove(o)
+            self.pieces[p].add(n)   
 
         #check if player's king is in check
-        for kingSpace in self.pieces['K']:
-            #will raise error if king in check
-            if tmpSpaces[kingSpace].inCheck(tmpSpaces, kingSpace):
-                #reverse pieces update
-                self.pieces[pieceType].remove(newSpace)
-                self.pieces[pieceType].add(oldSpace) 
-                raise RuntimeError('King in check')
+        #castling has already checked for check
+        if not castling:
+            for kingSpace in self.pieces['K']:
+                #will raise error if king in check
+                if tmpSpaces[kingSpace].inCheck(tmpSpaces, kingSpace):
+                    #reverse pieces update
+                    self.pieces[pieceType].remove(newSpace)
+                    self.pieces[pieceType].add(oldSpace) 
+                    raise RuntimeError('King in check')
+            #disable castling for piece if rook or king
+            if pieceType in 'RK':
+                tmpSpaces[newSpace].disableCastle()
 
-        #return updated spaces and captured piece type
+        #update spaces and opponent
         return tmpSpaces, tmpOpponent
         
     

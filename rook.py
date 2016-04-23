@@ -1,12 +1,9 @@
 '''
 Rook subclass
 '''
-from piece import Piece
+from piece import CastlePiece
 
-class Rook(Piece):
-    def disableCastle(self):
-        self.canCastle = False
-    
+class Rook(CastlePiece):
     def move(self, spaces, notation, newSpace):
         #use spaces and notation to determine if move is legal
         fO, rO, fN, rN = self.partitionSpaces(newSpace)
