@@ -3,22 +3,24 @@ Player class contains information of player's pieces and allows moves to be
 made.
 '''
 from copy import deepcopy
+
 import castle
-from knight import Knight
 from bishop import Bishop
+from knight import Knight
 from rook import Rook
 from queen import Queen
 
 class Player:
-    #pieces contains dictionary with sets of current positions for each type
-    #of piece
     def __init__(self, color):
         self.color = color
+        self.inCheck = False
+        self.moveset = None
+        self.castleset = {'O-O', 'O-O-O'}
         #color used to determine starting ranks
         if self.color == 'w':
-            self.ranks = '128'
+            self.ranks = '1285'
         else:
-            self.ranks = '871'
+            self.ranks = '8714'
         #add initial pawn positions
         self.pieces = {}
         self.pieces['P'] = set()
@@ -34,6 +36,23 @@ class Player:
         #no pawns vulnerable at start of game
         self.vulSpaces = None
     
+    def getMoveset(self, spaces):
+        '''
+        Create new set of available moves for player from board conditions
+        '''
+        self.moveset = set()
+        # find available piece moves
+        # self.moveset.add(piece.getMoveset()) for every player piece
+        self.moveset |= self.castleset
+
+    def newInCheck(self, spaces):
+        '''
+        Return True if King in check else False
+        '''
+        for kingSpace in self.pieces['K']:
+            #will raise error if king in check
+            return spaces[kingSpace].inCheck(spaces, kingSpace)
+
     #moves follow PGN notation
     def move(self, notation, spaces, opponent):
         #vulnerable pawns can be captured en passant
@@ -121,7 +140,7 @@ class Player:
                 #check if pawn was made vulnerable
                 if tmpSpaces[oldSpace].isVul():
                     self.vulSpaces = tmpSpaces[
-                        oldSpace].getVulSpace(), newSpace
+                            oldSpace].getVulSpace(), newSpace
                 #check if pawn is being promoted
                 elif promoting:
                     newPiece = notation[-1]
@@ -131,6 +150,8 @@ class Player:
                         if newPiece == 'R':
                             tmpSpaces[oldSpace] = Rook(
                                     self.color, oldSpace, 'R')
+                            #disable new rook's ability to castle
+                            tmpSpaces[oldSpace].disableCastle()
                         elif newPiece == 'N':
                             tmpSpaces[oldSpace] = Knight(
                                     self.color, oldSpace, 'N')
@@ -167,20 +188,25 @@ class Player:
         #check if player's king is in check
         #castling has already checked for check
         if not castling:
-            for kingSpace in self.pieces['K']:
-                #will raise error if king in check
-                if tmpSpaces[kingSpace].inCheck(tmpSpaces, kingSpace):
-                    #reverse pieces update
-                    self.pieces[pieceType].remove(newSpace)
-                    self.pieces[pieceType].add(oldSpace) 
-                    raise RuntimeError('King in check')
+            if self.newInCheck(tmpSpaces):
+                #reverse pieces update
+                self.pieces[pieceType].remove(newSpace)
+                self.pieces[pieceType].add(oldSpace) 
+                raise RuntimeError('King in check')
             #disable castling for piece if rook or king
             if pieceType in 'RK':
                 tmpSpaces[newSpace].disableCastle()
 
         #update spaces and opponent
         return tmpSpaces, tmpOpponent
-        
+    
+    def test(self, spaces):
+        #testing.......
+        moveset = set()
+        for testPawn in self.pieces['P']:
+            moveset |= spaces[testPawn].getMoveset(spaces, self)
+        print(moveset)
+
     
     def __repr__(self):
         return 'White' if self.color == 'w' else 'Black'

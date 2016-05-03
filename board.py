@@ -1,18 +1,21 @@
 '''
 Used to generate chess board based on given piece positions
 '''
-#import classes for pieces
-from pawn import *
-from knight import *
-from bishop import *
-from rook import *
-from queen import *
-from king import *
 import os
 
-#Creates initial board conditions
-#board is described using files (vertical) and ranks (horizontal)
+#import classes for pieces
+from pawn import Pawn
+from knight import Knight
+from bishop import Bishop
+from rook import Rook
+from queen import Queen
+from king import King
+
+
 def initiate():
+    '''
+    Creates initial board conditions and returns as spaces dictionary
+    '''
     spaces = {}
     #fill in empty spaces
     for f in 'abcdefgh':
@@ -40,18 +43,22 @@ def initiate():
     
     return spaces
 
-#Takes in dict containing board spaces and generates board
-#design of board can be viewed in ref.txt
+
 def generate(spaces):
+    '''
+    Draws the current board arrangement based on spaces input
+
+    See ref.txt for design of the board
+    '''
     os.system('clear')
-    fil = '\n    ' + '      %s' * 8 % ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
+    fil = '\n' + (' '*6).join(list('ABCDEFGH')).rjust(60)
     print(fil)
-    print('       ' + '_' * 55)
+    print(('_'*55).rjust(62))
     for r in '87654321':
         print('      |' * 9)
-        print('   %s  ' % r, end='')
+        print('   {}  '.format(r), end='')
         for f in 'ABCDEFGH':
-            print('|  %s  ' % spaces[f.lower()+r], end='')
-        print('|  %s' % r)
+            print('|  {}  '.format(spaces[f.lower()+r]), end='')
+        print('|  {}'.format(r))
         print('      |' + '______|' * 8)
     print(fil + '\n')

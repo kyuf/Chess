@@ -1,6 +1,8 @@
 '''
 Pawn subclass
 '''
+from copy import deepcopy
+
 from piece import Piece
 
 class Pawn(Piece):
@@ -9,6 +11,13 @@ class Pawn(Piece):
         Piece.__init__(self, color, space, note)
         self.vulnerable = False
     
+    def canEnPassant(self, spaces, newSpace, vulSpace, player):
+        tmpSpaces = deepcopy(spaces)
+        tmpSpaces[newSpace] = spaces[self.space]
+        tmpSpaces[self.space] = '  '
+        tmpSpaces[vulSpace] = '  '
+        return not player.newInCheck(tmpSpaces)
+
     def move(self, spaces, notation, newSpace):
         #check if pawn is in valid column
         if self.space[0] != notation[0]:
@@ -47,8 +56,66 @@ class Pawn(Piece):
             else:
                 return None
 
+    def newMove(self, spaces, player):       
+        fO, rO = self.space[0], self.space[1]
+
+        # move forward one space
+        newSpace = fO + chr(ord(rO)+self.forward)
+        if spaces[newSpace] == '  ':
+            if self.canMove(spaces, newSpace, player):
+                #promoting
+                if newSpace[-1] == player.ranks[2]:
+                    for pro in 'NBRQ':
+                        self.addToMoveset('{}={}'.format(newSpace, pro))
+                #normal
+                else:
+                    self.addToMoveset(newSpace)
+            #move forward two spaces
+            if rO == player.ranks[1]:
+                newSpace = fO + chr(ord(rO)+(self.forward*2))
+                if spaces[newSpace] == '  ':
+                    if self.canMove(spaces, newSpace, player):
+                        self.addToMoveset(newSpace)
+
+        # capture normal
+        for f in [chr(ord(fO)-1), chr(ord(fO)+1)]:
+            if f in 'abcdefgh':
+                newSpace = f + chr(ord(rO)+self.forward)
+                if (spaces[newSpace] != '  '
+                        and spaces[newSpace].color != player.color):
+                    if self.canMove(spaces, newSpace, player):
+                        #promoting
+                        if newSpace[-1] == player.ranks[2]:
+                            for pro in 'NBRQ':
+                                self.addToMoveset(
+                                        '{}x{}={}'.format(fO, newSpace, pro))
+                        #normal
+                        else:
+                            self.addToMoveset('{}x{}'.format(fO, newSpace))
+
+        # capture en passant
+        if rO == player.ranks[3]:
+            for f in [chr(ord(fO)-1), chr(ord(fO)+1)]:
+                if f in 'abcdefgh':
+                    newSpace = f + chr(ord(rO)+self.forward)
+                    vulSpace = f + rO
+                    if (spaces[newSpace] == '  '
+                            and spaces[vulSpace] != '  '
+                            and spaces[vulSpace].vulnerable):
+                        if self.canEnPassant(spaces, newSpace,
+                                vulSpace, player):
+                            self.addToMoveset('{}x{}'.format(fO, newSpace))
+
+            # check if space is empty
+            # move pawn
+            # check if king in check
+            # add to moveset if valid
+
     #state of vulnerability
     def isVul(self):
+        '''
+        Return Pawn's state of vulnerability to en passant
+        '''
         return self.vulnerable
 
     #return space where vulnerable pawn would be captured and pawn space

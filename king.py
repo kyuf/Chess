@@ -38,9 +38,25 @@ class King(CastlePiece):
         return self.space
 
     def inCheck(self, spaces, kingSpace):
+        '''
+        Return True if King in check else False
+        '''
         #helper functions
+        def isAdjacent(space):
+            '''
+            Check if space is adjacent to piece
+            '''
+            return (abs(ord(self.space[0])-ord(space[0])) <= 1
+                    and abs(ord(self.space[1])-ord(space[1])) <= 1)
+
         def checkCheck(space, attackers):
-            if space.color != self.color and space.note in attackers:
+            '''
+            Check if piece is attacking King
+            '''
+            #if attacking piece is king it must be adjacent
+            if space.note == 'K' and not isAdjacent(space.space):
+                return False
+            elif space.color != self.color and space.note in attackers:
                 return True
             return False
 
