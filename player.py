@@ -203,8 +203,9 @@ class Player:
     def test(self, spaces):
         #testing.......
         moveset = set()
-        for testPawn in self.pieces['P']:
-            moveset |= spaces[testPawn].getMoveset(spaces, self)
+        for typ in 'PN':
+            for testPiece in self.pieces[typ]:
+                moveset ^= spaces[testPiece].getMoveset(spaces, self)
         print(moveset)
 
     
