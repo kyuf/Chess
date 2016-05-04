@@ -17,14 +17,8 @@ class Knight(Piece):
     def newMove(self, spaces, player):
         fO, rO = self.space[0], self.space[1]
         deltas = [
-            (-1, 2),
-            (1, 2),
-            (2, 1),
-            (2, -1),
-            (1, -2),
-            (-1, -2),
-            (-2, -1),
-            (-2, 1)
+            (-1, 2), (1, 2), (2, 1), (2, -1),
+            (1, -2), (-1, -2), (-2, -1), (-2, 1)
         ]
         for df, dr in deltas:
             f = chr(ord(fO)+df)
@@ -33,18 +27,16 @@ class Knight(Piece):
                 newSpace = f + r
                 if spaces[newSpace] == '  ':
                     if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset(
-                            'N{}'.format(newSpace),
-                            'N{}{}'.format(fO, newSpace),
-                            'N{}{}'.format(rO, newSpace),
-                            'N{}{}'.format(self.space, newSpace)
-                        )
+                        self.addToMoveset('N{}'.format(newSpace))
+                        if len(player.pieces['N']) > 1:
+                            for val in [fO, rO, self.space]:
+                                self.addToMoveset(
+                                        'N{}{}'.format(val, newSpace))
                 #capture
                 elif spaces[newSpace].color != player.color:
                     if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset(
-                            'Nx{}'.format(newSpace),
-                            'N{}x{}'.format(fO, newSpace),
-                            'N{}x{}'.format(rO, newSpace),
-                            'N{}x{}'.format(self.space, newSpace)
-                        )
+                        self.addToMoveset('Nx{}'.format(newSpace))
+                        if len(player.pieces['N']) > 1:
+                            for val in [fO, rO, self.space]:
+                                self.addToMoveset(
+                                        'N{}x{}'.format(val, newSpace))

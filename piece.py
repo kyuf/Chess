@@ -49,6 +49,8 @@ class Piece:
         tmpSpaces = deepcopy(spaces)
         tmpSpaces[newSpace] = spaces[self.space]
         tmpSpaces[self.space] = '  '
+        if tmpSpaces[newSpace].note == 'K':
+            return not player.newInCheck(tmpSpaces, newSpace)
         return not player.newInCheck(tmpSpaces)
 
 

@@ -119,3 +119,22 @@ class King(CastlePiece):
                     break
 
         return False
+
+    def newMove(self, spaces, player):
+        fO, rO = self.space[0], self.space[1]
+        deltas = [
+            (-1, 1), (0, 1), (1, 1), (1, 0),
+            (1, -1), (0, -1), (-1, -1), (-1, 0)
+        ]
+        for df, dr in deltas:
+            f = chr(ord(fO)+df)
+            r = chr(ord(rO)+dr)
+            if f in 'abcdefgh' and r in '12345678':
+                newSpace = f + r
+                if spaces[newSpace] == '  ':
+                    if self.canMove(spaces, newSpace, player):
+                        self.addToMoveset('K{}'.format(newSpace))
+                #capture
+                elif spaces[newSpace].color != player.color:
+                    if self.canMove(spaces, newSpace, player):
+                        self.addToMoveset('Kx{}'.format(newSpace))

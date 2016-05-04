@@ -45,10 +45,21 @@ class Player:
         # self.moveset.add(piece.getMoveset()) for every player piece
         self.moveset |= self.castleset
 
-    def newInCheck(self, spaces):
+    def sameColorBishops(self, space):
+        for bishopSpace in self.pieces['B']:
+            if bishopSpace != space:
+                #black spaces are even and white spaces are odd
+                rem = sum(map(ord, space)) % 2
+                if (sum(map(ord, bishopSpace)) % 2) == rem:
+                    return True
+        return False
+
+    def newInCheck(self, spaces, kingSpace=None):
         '''
         Return True if King in check else False
         '''
+        if kingSpace:
+            return spaces[kingSpace].inCheck(spaces, kingSpace)
         for kingSpace in self.pieces['K']:
             #will raise error if king in check
             return spaces[kingSpace].inCheck(spaces, kingSpace)
@@ -203,7 +214,7 @@ class Player:
     def test(self, spaces):
         #testing.......
         moveset = set()
-        for typ in 'PN':
+        for typ in 'PNBRQK':
             for testPiece in self.pieces[typ]:
                 moveset ^= spaces[testPiece].getMoveset(spaces, self)
         print(moveset)
