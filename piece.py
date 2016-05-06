@@ -23,26 +23,19 @@ class Piece:
         '''
         self.space = newSpace
     
-    def partitionSpaces(self, newSpace):
-        '''
-        Partitions spaces into rank and file for calculations
-        '''
-        #old file, old rank, new file, new rank
-        return self.space[0], self.space[1], newSpace[0], newSpace[1]
-    
     def addToMoveset(self, *args):
         '''
         Adds moves (in notation) to the piece's moveset attribute
         '''
         for move in args:
-            self.moveset.add(move)
+            self.moveset[move] = self.space
 
     def getMoveset(self, spaces, player):
         '''
         Find available moves for piece
         '''
-        self.moveset = set()
-        self.newMove(spaces, player)
+        self.moveset = {}
+        self.move(spaces, player)
         return self.moveset
 
     def canMove(self, spaces, newSpace, player):
@@ -50,8 +43,8 @@ class Piece:
         tmpSpaces[newSpace] = spaces[self.space]
         tmpSpaces[self.space] = '  '
         if tmpSpaces[newSpace].note == 'K':
-            return not player.newInCheck(tmpSpaces, newSpace)
-        return not player.newInCheck(tmpSpaces)
+            return not player.inCheck(tmpSpaces, newSpace)
+        return not player.inCheck(tmpSpaces)
 
 
 class CastlePiece(Piece):
