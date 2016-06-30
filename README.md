@@ -22,6 +22,14 @@ Moving a Knight:
     
     Nc6
 
+Moving a Rook on the F file:
+
+    Rfb6
+
+Moving a Bishop on the C3 space:
+
+    Bc3e1
+
 Capturing a piece with Queen:
 
     Qxb2
@@ -37,9 +45,3 @@ Castling King Side (uses capital letter O):
 Castling Queen Side:
 
     O-O-O
-
-Features to be Implemented
---------
-
-* Checkmate
-* Specific piece selection (ie. R7e7)
