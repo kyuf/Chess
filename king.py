@@ -93,15 +93,14 @@ class King(CastlePiece):
             (-1, 1), (0, 1), (1, 1), (1, 0),
             (1, -1), (0, -1), (-1, -1), (-1, 0)
         ]
+        fSet = []
+        rSet = []
         for df, dr in deltas:
             f = chr(ord(fO)+df)
             r = chr(ord(rO)+dr)
             if f in 'abcdefgh' and r in '12345678':
-                newSpace = f + r
-                if spaces[newSpace] == '  ':
-                    if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset('K{}'.format(newSpace))
-                #capture
-                elif spaces[newSpace].color != player.color:
-                    if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset('Kx{}'.format(newSpace))
+                fSet.append(f)
+                rSet.append(r)
+        pathSet = ([zip(fSet, rSet)])
+
+        self.updateMoveset(spaces, pathSet, player)

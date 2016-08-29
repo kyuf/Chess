@@ -16,8 +16,7 @@ class Queen(Piece):
         right = getRange(1, fO, 'h')
         left = getRange(-1, fO, 'a')
 
-        #horizontal, vertical and diagonal paths
-        for filesAndRanks in [
+        pathSet = [
                 zip([fO]*len(up), up),
                 zip([fO]*len(down), down),
                 zip(right, [rO]*len(right)),
@@ -26,25 +25,6 @@ class Queen(Piece):
                 zip(left, up),
                 zip(right, down),
                 zip(left, down)
-                ]:
-            for f, r in filesAndRanks:
-                newSpace = f + r
-                if spaces[newSpace] == '  ':
-                    if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset('Q{}'.format(newSpace))
-                        if len(player.pieces['Q']) > 1:
-                            for val in [fO, rO, self.space]:
-                                self.addToMoveset(
-                                        'Q{}{}'.format(val, newSpace))
-                #pathing blocked by a piece
-                else:
-                    #capture
-                    if spaces[newSpace].color != player.color:
-                        if self.canMove(spaces, newSpace, player):
-                            self.addToMoveset('Qx{}'.format(newSpace))
-                            if len(player.pieces['Q']) > 1:
-                                for val in [fO, rO, self.space]:
-                                    self.addToMoveset(
-                                            'Q{}x{}'.format(val, newSpace))
-                    #terminate current path
-                    break
+                ]
+
+        self.updateMoveset(spaces, pathSet, player)

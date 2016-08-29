@@ -51,12 +51,16 @@ class Player:
 
         # self.moveset |= self.castleset
 
-    def sameColorBishops(self, space):
-        for bishopSpace in self.pieces['B']:
-            if bishopSpace != space:
+    def sameColorSpace(self, space, note):
+        '''
+        Determine if player has any pieces of given note on the same color
+        space
+        '''
+        for pieceSpace in self.pieces[note]:
+            if pieceSpace != space:
                 #black spaces are even and white spaces are odd
                 rem = sum(map(ord, space)) % 2
-                if (sum(map(ord, bishopSpace)) % 2) == rem:
+                if (sum(map(ord, pieceSpace)) % 2) == rem:
                     return True
         return False
 

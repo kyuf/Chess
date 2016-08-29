@@ -16,30 +16,11 @@ class Rook(CastlePiece):
         right = getRange(1, fO, 'h')
         left = getRange(-1, fO, 'a')
 
-        for filesAndRanks in [
+        pathSet = [
                 zip([fO]*len(up), up),
                 zip([fO]*len(down), down),
                 zip(right, [rO]*len(right)),
                 zip(left, [rO]*len(left))
-                ]:
-            for f, r in filesAndRanks:
-                newSpace = f + r
-                if spaces[newSpace] == '  ':
-                    if self.canMove(spaces, newSpace, player):
-                        self.addToMoveset('R{}'.format(newSpace))
-                        if len(player.pieces['R']) > 1:
-                            for val in [fO, rO, self.space]:
-                                self.addToMoveset(
-                                        'R{}{}'.format(val, newSpace))
-                #pathing blocked by a piece
-                else:
-                    #capture
-                    if spaces[newSpace].color != player.color:
-                        if self.canMove(spaces, newSpace, player):
-                            self.addToMoveset('Rx{}'.format(newSpace))
-                            if len(player.pieces['R']) > 1:
-                                for val in [fO, rO, self.space]:
-                                    self.addToMoveset(
-                                            'R{}x{}'.format(val, newSpace))
-                    #terminate current path
-                    break
+                ]
+
+        self.updateMoveset(spaces, pathSet, player)
