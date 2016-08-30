@@ -7,16 +7,15 @@ def castle(notation, spaces, player):
     #select king or queen side rook space
     #O-O is king side
     if notation == 'O-O':
-        rookSpace = 'h' + r
-        checkIfEmpty = 'fg'
-        newKingSpace = 'g' + r
-        newRookSpace = 'f' + r
+        castleTemplate = 'hgf'
     #O-O-O is queen side
     else:
-        rookSpace = 'a' + r
-        checkIfEmpty = 'dcb'
-        newKingSpace = 'c' + r
-        newRookSpace = 'd' + r
+        castleTemplate = 'abcd'
+
+    rookSpace = castleTemplate[0] + r
+    checkIfEmpty = castleTemplate[1:]
+    newKingSpace = castleTemplate[-2] + r
+    newRookSpace = castleTemplate[-1] + r
         
     #check if king and rook are in correct spaces
     if (kingSpace in player.pieces['K']
