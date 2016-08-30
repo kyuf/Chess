@@ -17,7 +17,7 @@ class Piece:
             self.basicMoveTemplate = [self.note+'{}', self.note+'{}{}']
             self.captureMoveTemplate = [self.note+'x{}', self.note+'{}x{}']
     
-    def __repr__(self):
+    def __str__(self):
         #self.note defined in subclasses
         return self.color + self.note
     
